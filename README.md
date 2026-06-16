@@ -111,7 +111,7 @@ Run the following command inside the `backend` folder:
 
 ```bash
 npx prisma db seed
-
+```
 
 ## 🧠 Features
 
