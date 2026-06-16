@@ -1,0 +1,310 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+// ==========================================
+// ENUMS
+// ==========================================
+
+enum Role {
+  ADMIN
+  COMPANY
+  STUDENT
+}
+
+enum ApplicationStatus {
+  APPLIED
+  SHORTLISTED
+  REJECTED
+  INTERVIEW
+  SELECTED
+}
+
+enum JobSearchStatus {
+  ACTIVE
+  OPEN_TO_OFFERS
+  NOT_LOOKING
+}
+
+enum CompanySize {
+  SIZE_1_10
+  SIZE_11_50
+  SIZE_51_200
+  SIZE_201_500
+  SIZE_500_PLUS
+}
+
+enum JobType {
+  FULL_TIME
+  PART_TIME
+  INTERNSHIP
+  CONTRACT
+  FREELANCE
+}
+
+enum WorkMode {
+  REMOTE
+  ONSITE
+  HYBRID
+}
+
+enum ExperienceLevel {
+  FRESHER
+  JUNIOR
+  MID_LEVEL
+  SENIOR
+  LEAD
+}
+
+enum JobStatus {
+  ACTIVE
+  CLOSED
+  PAUSED
+  EXPIRED
+}
+
+enum JobCategory {
+  SOFTWARE_DEVELOPMENT
+  DATA_SCIENCE
+  AI_ML
+  DEVOPS
+  CYBER_SECURITY
+
+  PRODUCT_MANAGEMENT
+  PROJECT_MANAGEMENT
+
+  DESIGN
+  UI_UX_DESIGN
+
+  MARKETING
+  DIGITAL_MARKETING
+  CONTENT_WRITING
+  SEO
+
+  SALES
+  BUSINESS_DEVELOPMENT
+  CUSTOMER_SUPPORT
+
+  HR
+  RECRUITMENT
+
+  FINANCE
+  ACCOUNTING
+  BANKING
+  INVESTMENT
+
+  OPERATIONS
+  SUPPLY_CHAIN
+  LOGISTICS
+
+  LEGAL
+  CONSULTING
+
+  EDUCATION
+  TRAINING
+
+  HEALTHCARE
+  PHARMACEUTICAL
+
+  MECHANICAL_ENGINEERING
+  ELECTRICAL_ENGINEERING
+  CIVIL_ENGINEERING
+
+  AUTOMOBILE
+
+  TELECOMMUNICATION
+
+  MEDIA
+  JOURNALISM
+
+  HOSPITALITY
+  TRAVEL_TOURISM
+
+  REAL_ESTATE
+
+  GOVERNMENT
+
+  INTERNSHIP
+
+  OTHER
+}
+
+enum ApprovalStatus {
+  PENDING
+  APPROVED
+  REJECTED
+}
+
+enum OtpPurpose {
+  REGISTER
+  FORGOT_PASSWORD
+}
+
+// ==========================================
+// MODELS
+// ==========================================
+
+model User {
+  id String @id @default(uuid())
+
+  email    String @unique
+  password String
+
+  role Role
+
+  isEmailVerified Boolean @default(false)
+
+  failedLoginAttempts Int       @default(0)
+  lockedUntil         DateTime?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @default(now()) @updatedAt
+
+  studentProfile StudentProfile?
+  companyProfile CompanyProfile?
+
+  jobs         Job[]
+  applications Application[]
+}
+
+model Otp {
+  id         String     @id @default(uuid())
+  email      String
+  codeHash   String
+  purpose    OtpPurpose
+  attempts   Int        @default(0)
+  expiresAt  DateTime
+  verifiedAt DateTime?
+  createdAt  DateTime   @default(now())
+
+  @@index([email])
+}
+
+model StudentProfile {
+  id           String          @id @default(uuid())
+  firstName    String?
+  lastName     String?
+  phone        String?
+  address      String?
+  dob          DateTime?
+  headline     String?
+  bio          String?
+  searchStatus JobSearchStatus @default(OPEN_TO_OFFERS)
+  skills     String[] @default([])
+  experience Json?
+  education  Json?
+  certifications Json?
+  resumeUrl String?
+  imageUrl  String?
+  linkedin     String?
+  github       String?
+  portfolioUrl String?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  userId String @unique
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+model CompanyProfile {
+  id          String       @id @default(uuid())
+  companyName String?
+  description String?
+  industry    String? 
+  companySize CompanySize?
+  foundedAt   Int?
+  ownerName   String?
+  phone       String?
+  address     String?
+  website     String?
+
+  linkedin  String?
+  twitter   String?
+  facebook  String?
+  instagram String?
+
+  logoUrl         String?
+  verificationDoc String?
+  approvalStatus  ApprovalStatus @default(PENDING)
+  rejectionReason String?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  userId String @unique
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+model Job {
+  id String @id @default(uuid())
+
+  title       String
+  description String
+
+  category JobCategory?
+
+  location String?
+
+  jobType  JobType
+  workMode WorkMode
+
+  status JobStatus @default(ACTIVE)
+
+  vacancies Int @default(1)
+
+  salaryMin Int?
+  salaryMax Int?
+
+  salaryCurrency String @default("INR")
+
+  experienceLevel ExperienceLevel?
+  experienceYears Int?
+
+  skills       String[]
+  requirements String[]
+  benefits     String[]
+
+  applicationCount Int @default(0)
+
+  applicationDeadline DateTime?
+  expiresAt           DateTime?
+
+  isFeatured Boolean @default(false)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  createdById String
+  createdBy   User   @relation(fields: [createdById], references: [id])
+
+  applications Application[]
+
+  @@index([createdAt])
+  @@index([jobType])
+  @@index([workMode])
+  @@index([createdById])
+  @@index([status])
+}
+
+model Application {
+  id        String            @id @default(uuid())
+  status    ApplicationStatus @default(APPLIED)
+  createdAt DateTime          @default(now())
+  updatedAt DateTime          @updatedAt
+
+  studentId String
+  student   User   @relation(fields: [studentId], references: [id], onDelete: Cascade)
+
+  jobId String
+  job   Job    @relation(fields: [jobId], references: [id], onDelete: Cascade)
+
+  // Composite constraints & search indices
+  @@unique([studentId, jobId])
+  @@index([jobId])
+}

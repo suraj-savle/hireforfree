@@ -1,0 +1,78 @@
+src/
+│
+├── app/
+│   ├── (auth)/
+│   │   ├── login/
+│   │   └── register/
+│   │
+│   ├── admin/
+│   │   ├── dashboard/
+│   │   ├── companies/
+│   │   ├── students/
+│   │   └── jobs/
+│   │
+│   ├── company/
+│   │   ├── dashboard/
+│   │   ├── jobs/
+│   │   └── applicants/
+│   │
+│   ├── student/
+│   │   ├── dashboard/
+│   │   ├── jobs/
+│   │   ├── applications/
+│   │   └── profile/
+│   │
+│   ├── jobs/
+│   ├── layout.tsx
+│   ├── page.tsx
+│   └── globals.css
+│
+├── components/
+│   ├── common/
+│   ├── forms/
+│   ├── ui/
+│   ├── layouts/
+│   ├── tables/
+│   ├── cards/
+│   └── modals/
+│
+├── services/
+│   ├── auth.service.ts
+│   ├── jobs.service.ts
+│   ├── company.service.ts
+│   ├── student.service.ts
+│   └── application.service.ts
+│
+├── hooks/
+│   ├── useAuth.ts
+│   ├── useJobs.ts
+│   ├── useApplications.ts
+│   └── useUser.ts
+│
+├── lib/
+│   ├── axios.ts
+│   ├── utils.ts
+│   └── constants.ts
+│
+├── providers/
+│   └── query-provider.tsx
+│
+├── schemas/
+│   ├── auth.schema.ts
+│   ├── job.schema.ts
+│   └── company.schema.ts
+│
+├── types/
+│   ├── auth.types.ts
+│   ├── job.types.ts
+│   ├── user.types.ts
+│   └── application.types.ts
+│
+├── store/
+│   ├── auth.store.ts
+│   └── app.store.ts
+│
+├── config/
+│   └── env.ts
+│
+└── middleware.ts
