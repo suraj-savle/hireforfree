@@ -99,6 +99,19 @@ cd backend
 npx prisma studio
 ```
 
+## Admin Access (Important)
+
+Admin registration is **not available from frontend UI** for security reasons.
+
+You must create an admin user manually using the database seed script.
+
+### Create Admin User
+
+Run the following command inside the `backend` folder:
+
+```bash
+npx prisma db seed
+
 
 ## 🧠 Features
 
