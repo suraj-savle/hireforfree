@@ -113,6 +113,23 @@ Run the following command inside the `backend` folder:
 npx prisma db seed
 ```
 
+### OTP Authentication Setup (IMPORTANT)
+
+This project uses Resend for email OTP verification.
+
+## Step 1: Create Resend Account
+Go to: https://resend.com
+Sign up / login
+
+## Step 2: Add Domain
+Add your domain in Resend dashboard
+Example: yourdomain.com
+
+## Step 3: Configure DNS
+
+Add records in your domain provider:
+Wait until domain is verified
+
 ## 🧠 Features
 
 * Student Job Search & Apply System
